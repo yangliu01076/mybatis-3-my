@@ -27,7 +27,7 @@ public class DemoTest extends BaseDataTest{
         final String resource = "org/apache/ibatis/builder/MapperConfig.xml";
         final Reader reader = Resources.getResourceAsReader(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-        try (SqlSession session = sqlSessionFactory.openSession(TransactionIsolationLevel.SERIALIZABLE)) {
+        try (SqlSession session = sqlSessionFactory.openSession(TransactionIsolationLevel.REPEATABLE_READ)) {
             List<Author> authors = session.selectList("org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAllAuthors");
             assertEquals(2, authors.size());
         }
