@@ -1,6 +1,7 @@
 package org.apache.ibatis;
 
 import org.apache.ibatis.domain.blog.Author;
+import org.apache.ibatis.domain.blog.mappers.AuthorMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -19,17 +20,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author duoyian
  * @date 2026/7/24
  */
-public class DemoTest extends BaseDataTest{
+public class DemoTest extends BaseDataTest {
 
-    @Test
-    public void test() throws SQLException, IOException {
-        createBlogDataSource();
-        final String resource = "org/apache/ibatis/builder/MapperConfig.xml";
-        final Reader reader = Resources.getResourceAsReader(resource);
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
-        try (SqlSession session = sqlSessionFactory.openSession(TransactionIsolationLevel.REPEATABLE_READ)) {
-            List<Author> authors = session.selectList("org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAllAuthors");
-            assertEquals(2, authors.size());
-        }
+  @Test
+  public void test() throws SQLException, IOException {
+    createBlogDataSource();
+    final String resource = "org/apache/ibatis/builder/MapperConfig.xml";
+    final Reader reader = Resources.getResourceAsReader(resource);
+    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+    try (SqlSession session = sqlSessionFactory.openSession(TransactionIsolationLevel.REPEATABLE_READ)) {
+      AuthorMapper mapper = session.getMapper(AuthorMapper.class);
+      List<Author> authors1 = mapper.selectAllAuthors();
+      assertEquals(2, authors1.size());
+      List<Author> authors = session.selectList("org.apache.ibatis.domain.blog.mappers.AuthorMapper.selectAllAuthors");
+      assertEquals(2, authors.size());
     }
+  }
 }
